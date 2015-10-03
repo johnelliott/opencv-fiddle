@@ -1,7 +1,8 @@
 var cv = require('opencv');
+var path = require('path');
 var loader = require('./lib/file.js');
 
-var vid = loader('videos/face.mov');
+var vid = loader(path.join(__dirname, 'videos', 'face.mov'));
 
 var namedWindow = new cv.NamedWindow('Video', 1);
 
