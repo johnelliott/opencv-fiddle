@@ -1,8 +1,9 @@
 var cv = require('opencv');
 var path = require('path');
 var loader = require('./lib/file.js');
+var encircle = require('./lib/circle.js');
 
-var vid = loader(path.join(__dirname, 'movies', 'face.mov'));
+var vid = loader(path.join(__dirname, 'movies', 'ped-clip-2.mov'));
 
 var namedWindow = new cv.NamedWindow('Video', 1);
 
@@ -13,19 +14,17 @@ var intervalId = setInterval(function() {
       throw err;
     }
 
-    mat.detectObject('node_modules/opencv/data/haarcascade_frontalface_alt.xml', {}, function(err, faces) {
+    mat.detectObject('node_modules/opencv/data/haarcascade_fullbody.xml', {}, function(err, faces) {
       if (err) {
         console.error("Error:", err);
         throw err;
       }
 
       // Draw a circle over the face
-      for (var i = 0; i < faces.length; i++) {
-        var face = faces[i];
-        mat.ellipse(face.x + face.width / 2, face.y + face.height / 2, face.width / 2, face.height / 2);
-      }
+      var circledMat = encircle(mat, faces);
 
-      namedWindow.show(mat);
+      // Draw the frame to the window
+      namedWindow.show(circledMat);
 
       var res = namedWindow.blockingWaitKey(0, 50);
       if (res >= 0) {
