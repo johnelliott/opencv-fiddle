@@ -15,27 +15,13 @@ server.on('request', function(req, res) {
 
   var tempPath = path.join(__dirname, 'tmp', 'file.mov');
   var file = fs.createWriteStream(tempPath);
-  req.pipe(file);
-
-  // What I should do is pipe to the detector, and the detector will handle saving
-  // to the fs and whatever else it needs to coddle the node-opencv api
-  // so basically req.pipe(detector)
-  // detector.pipe(res)
-  // then the detector basically becomes a streaming object detector thing,
-  // and it doesn't have to know about http or where it's being used. It gets an 
-  // input video and spits out json summary data
+  file.on('open', function() {
+    console.log('the file is open');
+    req.pipe(file);
+  });
 
   file.on('finish', function() {
-    console.log('finished!');
-  });
-
-  req.on('data', function(data) {
-    console.log('we got data!:', data);
-  });
-
-  req.on('end', function() {
-    console.log('req end');
-    res.writeHead(200, { 'Content-Type': 'application/json'});
+    console.log('file finished,', file.bytesWritten, "bytes written");
 
     detector(tempPath, function(err, data) {
       if (err) {
@@ -47,6 +33,15 @@ server.on('request', function(req, res) {
       res.write(JSON.stringify(data), ['Transfer-Encoding', 'chunked']);
     });
 
+  });
+
+  file.on('pipe', function(src) {
+    console.log('piped');
+  });
+
+  req.on('end', function() {
+    console.log('req end');
+    res.writeHead(200, { 'Content-Type': 'application/json'});
   });
 
   res.on('finish', function deleteTmpFile() {
