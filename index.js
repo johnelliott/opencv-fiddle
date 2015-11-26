@@ -13,13 +13,22 @@ server.listen(3000, function() {
 server.on('request', function(req, res) {
   // TODO check content-type for posts
 
-  // create temp file
   var tempPath = path.join(__dirname, 'tmp', 'file.mov');
   var file = fs.createWriteStream(tempPath);
-  // pipe the data into a file
   req.pipe(file);
 
-  // declare victory
+  // What I should do is pipe to the detector, and the detector will handle saving
+  // to the fs and whatever else it needs to coddle the node-opencv api
+  // so basically req.pipe(detector)
+  // detector.pipe(res)
+  // then the detector basically becomes a streaming object detector thing,
+  // and it doesn't have to know about http or where it's being used. It gets an 
+  // input video and spits out json summary data
+
+  file.on('finish', function() {
+    console.log('finished!');
+  });
+
   req.on('data', function(data) {
     console.log('we got data!:', data);
   });
@@ -28,7 +37,6 @@ server.on('request', function(req, res) {
     console.log('req end');
     res.writeHead(200, { 'Content-Type': 'application/json'});
 
-    // call detector on that file
     detector(tempPath, function(err, data) {
       if (err) {
         // return instead of throwing an error here
@@ -41,7 +49,6 @@ server.on('request', function(req, res) {
 
   });
 
-  // clean up the temp file
   res.on('finish', function deleteTmpFile() {
     console.log('deleting', tempPath);
     fs.unlink(tempPath, function (err) {
