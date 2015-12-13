@@ -28,9 +28,12 @@ server.on('request', function(req, res) {
         // return instead of throwing an error here
         return console.error(err);
       }
-      console.log('processed:', data);
-      // send back the results
-      res.write(JSON.stringify(data), ['Transfer-Encoding', 'chunked']);
+      // ignore empty data
+      if (data.length) {
+        console.log('found', data);
+        // send back the results
+        res.write(JSON.stringify(data), ['Transfer-Encoding', 'chunked']);
+      }
     });
 
   });
