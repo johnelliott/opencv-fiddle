@@ -1,4 +1,5 @@
-//var Dup = require('./duplex-module-test.js');
-var Dup = require('./ped-duplex-stream.js');
+//var dpeDup = require('./duplex-module-test.js');
+var dup = require('./ped-duplex-stream.js');
 
-var dup = new Dup(process.stdin, process.stdout);
+//TODO this should become a test that it returns readable/writable
+var dup = process.stdin.pipe(dup()).pipe(process.stdout);
