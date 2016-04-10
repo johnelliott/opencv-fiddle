@@ -1,15 +1,20 @@
-var fs = require('fs');
-var stream = require('stream');
+var through = require('through');
 var duplex = require('duplexer');
-var cv = require('opencv');
 var tr = require('./transcode');
+var cv = require('opencv');
 
-module.exports = function createPedDuplex(rs, ws) {
+module.exports = function pedTransformStream() {
   // input/output streams for this module
   // TODO parse piped in file and explode if it's a .mov
   var algo = 'node_modules/opencv/data/haarcascade_fullbody.xml';
   var cvStream = new cv.ImageStream();
-  rs.pipe(tr).pipe(cvStream, {end: false});
+  var output = through();
+
+  cvStream.on('finish', function() {
+    output.end();
+  });
+
+  tr.pipe(cvStream);
 
   cvStream.on('data', function(im) {
     if (im.width() < 1 || im.height() < 1) throw new Error('image has no size');
@@ -29,13 +34,11 @@ module.exports = function createPedDuplex(rs, ws) {
             match.height / 2);
         }
         // Write to output stream because cvStream is an event emitter
-        ws.write(JSON.stringify(match));
+        output.write(JSON.stringify(match));
         // do backup save for debugging
-        im.save("./tmp/ped" + Date.now() + ".jpg");
+        //im.save("./tmp/ped" + Date.now() + ".jpg");
       }
     });
   });
-
-  return duplex(rs, ws);
+  return duplex(tr, output);
 };
-
