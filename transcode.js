@@ -1,7 +1,9 @@
 var cp = require('child_process');
 var duplex = require('duplexer');
 
-var ffmpeg = cp.spawn("ffmpeg", [
+// TODO parse piped in file and explode if it's a .mov
+module.exports = function Transcoder() {
+  var ffmpeg = cp.spawn("ffmpeg", [
     "-re", // -re i Read input at native frame rate. Mainly used to simulate a grab device or live input stream
     "-y", // Overwrite output files without asking.
     "-i",
@@ -16,9 +18,10 @@ var ffmpeg = cp.spawn("ffmpeg", [
     "image2pipe",
     //"-c:v", "jpg",
     "pipe:1"
-]);
-// testing: ffmpeg -i movies/ped-clip-2.mov -s 120x90 -r 1 -vframes 7 -f image2 './tmp/img-%03d.jpeg'
-// set encoding, not sure if I need to do this...
-ffmpeg.stdin.setEncoding('utf8');
+  ]);
+  // testing: ffmpeg -i movies/ped-clip-2.mov -s 120x90 -r 1 -vframes 7 -f image2 './tmp/img-%03d.jpeg'
+  // set encoding, not sure if I need to do this...
+  ffmpeg.stdin.setEncoding('utf8');
 
-module.exports = duplex(ffmpeg.stdin, ffmpeg.stdout);
+  return duplex(ffmpeg.stdin, ffmpeg.stdout);
+};

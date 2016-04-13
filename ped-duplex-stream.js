@@ -1,17 +1,16 @@
 var through = require('through');
 var duplex = require('duplexer');
-var tr = require('./transcode');
+var Tr = require('./transcode');
 var cv = require('opencv');
 
-module.exports = function pedTransformStream() {
+module.exports = function PedTransformStream() {
 
-  // TODO consider: if (!(this instanceof ConcatStream)) return new ConcatStream(opts, cb)
-
-    // TODO parse piped in file and explode if it's a .mov
-  var cvStream = new cv.ImageStream();
   // input/output streams for this module
+  var cvStream = new cv.ImageStream();
+  var tr = new Tr()
   var output = through();
 
+  // TODO parse piped in file and explode if it's a .mov
   tr.pipe(cvStream);
 
   cvStream.on('finish', function() {
