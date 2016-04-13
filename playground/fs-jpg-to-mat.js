@@ -14,8 +14,8 @@ fs.readdir('./tmp/', function(err, files) {
         throw err;
     }
     files.map(function pipeImages (im) {
-        if (im.indexOf('jpeg') !== -1) {
-            console.log('found a jpeg', im);
+        if (im.indexOf('jpg') !== -1) {
+            console.log('found a jpg', im);
             var rs = fs.createReadStream('./tmp/' + im);
             var concatStream = concat(function gotPicture (data) {
                 cvStream.write(data);

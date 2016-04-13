@@ -21,9 +21,9 @@ cvStream.on('data', function(im) {
       for (var i = 0; i < matches.length; i++) {
         var match = matches[i];
         im.ellipse(match.x + match.width / 2,
-          match.y + match.height / 2,
-          match.width / 2,
-          match.height / 2);
+                   match.y + match.height / 2,
+                   match.width / 2,
+                   match.height / 2);
       }
       process.stdout.write(JSON.stringify(match));
       im.save("./tmp/ped" + Date.now() + ".jpg");

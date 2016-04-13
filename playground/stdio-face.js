@@ -20,9 +20,9 @@ ws.on('load', function(im) {
     for (var i = 0; i < faces.length; i++) {
       var face = faces[i];
       im.ellipse(face.x + face.width / 2,
-        face.y + face.height / 2,
-        face.width / 2,
-        face.height / 2);
+                 face.y + face.height / 2,
+                 face.width / 2,
+                 face.height / 2);
     }
 
     var buf = im.toBuffer();
