@@ -3,6 +3,7 @@ var duplex = require('duplexer');
 var Tr = require('./transcode');
 var ImageTransformStream = require('./image-transform-stream.js');
 var cv = require('opencv');
+var rc = require('./node-opencv-random-color.js');
 
 module.exports = function PedTransformStream() {
 
@@ -19,41 +20,45 @@ module.exports = function PedTransformStream() {
   });
 
   var algo = 'node_modules/opencv/data/haarcascade_fullbody.xml';
-  var hadSeedPed = false;
+  var state = {
+    frames: [],
+    recs: [],
+    matches: []
+  };
   cvStream.on('data', function(im) {
     if (im.width() < 1 || im.height() < 1) throw new Error('image has no size');
+    state.frames.push(im);
     im.detectObject(algo, {}, function(err, matches) {
       if (err) {
         console.error("Error:", err);
         throw err;
-      } else if (hadSeedPed) {
-        console.log('we don\'t need any more!')
-        return;
       }
 
       if (matches.length > 0) {
-        hadSeedPed = true;
-        console.error('I could call this with', matches);
+        var color = rc()
         for (var i = 0; i < matches.length; i++) {
+          state.matches.push(matches[i]);
           var match = matches[i];
 
           var matchBoundingBox = [
             match.x,
             match.y,
-            match.x + match.width,
-            match.y + match.height
+            match.x + match.width /2,
+            match.y + match.height /2
           ];
 
-          /*
+          var track = new cv.TrackedObject(im, matchBoundingBox, {channel: 'value'});
+          var rec = track.track(im);
+          state.recs.push(rec);
+          console.log('rec:', rec)
+          im.rectangle([rec[0], rec[1]], [rec[2], rec[3]], color)
+          //im.save('./tmp/out-motiontrack-' + Date.now() + '.jpg')
+
           im.ellipse(match.x + match.width / 2,
                      match.y + match.height / 2,
                      match.width / 2,
-                     match.height / 2);
-                     */
-          im.rectangle([match.x, match.y], [match.width, match.height]);
-
-          var track = new cv.TrackedObject(im, matchBoundingBox, {channel: 'value'});
-          console.log(track);
+                     match.height / 2, color);
+          //im.rectangle([match.x, match.y], [match.width, match.height], color);
           // Write to output stream because cvStream is an event emitter
           output.write(JSON.stringify(match) + '\n');
           // do backup save for debugging
@@ -61,11 +66,7 @@ module.exports = function PedTransformStream() {
         }
       }
     });
+    console.log('state:', state)
   });
   return duplex(tr, output);
 };
-
-/*
- * notes
- * could use the detection to pick up if the tracker loses the scent
- */
