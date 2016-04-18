@@ -1,32 +1,36 @@
 var util = require('util')
 var stream = require('stream')
-var cv = require('opencv');
-var Tr = require('./transcode');
+var cv = require('opencv')
 
 function ImageTransformStream() {
   stream.Transform.call(this, {objectMode: true})
+  this.tailPromise = Promise.resolve()
 }
 
 util.inherits(ImageTransformStream, stream.Transform)
 
 ImageTransformStream.prototype._transform = function(buf, encoding, callback) {
   var self = this //sry...
-  cv.readImage(buf, function(err, matrix){
-    if (err) {
-      return callback(err)
-      //return self.emit('error', err)
-    }
-    console.log('what typeof mat we got', typeof matrix)
-    console.log('what mat we got', matrix)
-    console.log(typeof matrix.inspect())
-    console.log(matrix.inspect())
-    self.push(matrix)
-    callback()
+  var prom = new Promise(function(resolve, reject) {
+    cv.readImage(buf, function(err, matrix){
+      if (err) {
+        reject(err)
+        return self.emit('error', err)
+      }
+      self.push(matrix)
+      callback()
+      resolve()
+    })
+  })
+  this.tailPromise = this.tailPromise.then(function() {
+    return prom
   })
 }
 
 ImageTransformStream.prototype._flush = function(callback) {
-  callback()
+  this.tailPromise.then(function() {
+    callback()
+  })
 }
 
 module.exports = ImageTransformStream
