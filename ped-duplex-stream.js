@@ -1,13 +1,13 @@
 var through = require('through');
 var duplex = require('duplexer');
 var Tr = require('./transcode');
-var cv = require('opencv');
+var ImageTransformStream = require('./image-transform-stream.js');
 
 module.exports = function PedTransformStream() {
 
   // input/output streams for this module
-  var cvStream = new cv.ImageStream();
-  var tr = new Tr()
+  var cvStream = new ImageTransformStream();
+  var tr = new Tr();
   var output = through();
 
   // TODO parse piped in file and explode if it's a .mov
