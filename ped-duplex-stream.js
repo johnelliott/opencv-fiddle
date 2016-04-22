@@ -3,7 +3,7 @@ var duplex = require('duplexer');
 var Tr = require('./transcode');
 var ImageTransformStream = require('./image-transform-stream.js');
 var cv = require('opencv');
-var rc = require('./node-opencv-random-color.js');
+var rc = require('rgb-random-array');
 
 module.exports = function PedTransformStream() {
 

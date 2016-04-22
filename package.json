@@ -21,7 +21,7 @@
     "duplexer": "^0.1.1",
     "ecstatic": "^1.4.0",
     "opencv": "git+https://github.com/johnelliott/node-opencv.git",
-    "tape": "^4.5.1",
+    "rgb-random-array": "^1.0.1",
     "through": "^2.3.8"
   },
   "devDependencies": {
