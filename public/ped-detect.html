@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Ped Detector</title>
+  <link rel="stylesheet" href="tufte.css"/>
+  <link rel="stylesheet" href="latex.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <article>
+    <h1>Pedestrian Detector</h1>
+    <p class="subtitle">With Node, openCV, and streams</p>
+    <section>
+      <figure>
+        <label for="mn-exports-imports" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-exports-imports" class="margin-toggle"/><span class="marginnote">Drag and drop a movie file in the box to the left, <em>.mov files will not work</em> as their format is fussy.</span>
+        <div id="dropTarget" style="height: 200px; width: 100%; border: 1px dotted black;"></div>
+      </figure>
+      <h2>Code</h2>
+      <p>The line to note in the server is <span class="code">req.pipe(dup()).pipe(res)</span>. This is a duplex stream that takes in video and returns text.</p>
+      <p>ImageStream from node-openCV isn't a full transform stream, so a through stream is used as the output to keep the module a duplex stream.</p>
+      <p>
+        <figure>
+          <script src="https://gist.github.com/johnelliott/12f4d5f7ea4c09e618dc4e66c9aefe3f.js"></script>
+        </figure>
+      </p>
+      <p><a href="http://www.github.com/johnelliott">John Elliott on Github</a>
+    </section>
+  </article>
+  <script src="bundle.js"></script>
+</body>
+</html>
