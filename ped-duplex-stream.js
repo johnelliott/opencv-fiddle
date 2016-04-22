@@ -1,16 +1,16 @@
 var through = require('through');
 var duplex = require('duplexer');
 var Tr = require('./transcode');
-var ImageTransformStream = require('./image-transform-stream.js');
+var ImageMatTransform = require('./image-mat-transform.js');
 var cv = require('opencv');
 var rc = require('rgb-random-array');
 
 module.exports = function PedTransformStream() {
 
-  // input/output streams for this module
-  var cvStream = new ImageTransformStream();
-  var tr = new Tr();
-  var output = through();
+  // I/O streams for this module
+  var tr = new Tr(); // Video to image transform
+  var cvStream = new ImageMatTransform(); // Image to opencv matrix transform
+  var output = through(); // Output stream to help package this module in duplex
 
   // TODO parse piped in file and explode if it's a .mov
   tr.pipe(cvStream);

@@ -2,7 +2,7 @@ var test = require('tape');
 var fs = require('fs');
 var path = require('path');
 var concat = require('concat-stream');
-var ImageTransformStream = require('../image-transform-stream.js');
+var ImageTransformStream = require('../image-mat-transform.js');
 
 test('stream anatomy', function (t) {
   t.plan(3);
