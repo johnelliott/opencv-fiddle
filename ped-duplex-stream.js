@@ -46,13 +46,12 @@ module.exports = function PedTransformStream() {
             match.x + match.width /2,
             match.y + match.height /2
           ];
+          console.log('matchBoundingBox', matchBoundingBox)
 
           var track = new cv.TrackedObject(im, matchBoundingBox, {channel: 'value'});
           var rec = track.track(im);
           state.recs.push(rec);
-          console.log('rec:', rec)
           im.rectangle([rec[0], rec[1]], [rec[2], rec[3]], color)
-          //im.save('./tmp/out-motiontrack-' + Date.now() + '.jpg')
 
           im.ellipse(match.x + match.width / 2,
                      match.y + match.height / 2,
