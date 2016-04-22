@@ -1,15 +1,15 @@
 {
-  "name": "js-opencv-examples",
+  "name": "js-opencv-fiddle",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dbg": "nodemon server.js",
     "watch": "watchify --debug src/*.js --outfile public/bundle.js",
-    "twoFakeCounters": "echo 88 89 |xargs -P 2 -n 1 ./faker.sh",
     "build": "browserify src/*.js --outfile public/bundle.js",
     "start": "node server.js",
     "test": "node test/index.js",
+    "avi": "rm -f tmp/*.jpg && curl -XPOST localhost:3000 -H\"Content-Type: video/avi\" --data-binary @movies/ped-clip-2.avi && open tmp/",
     "try": "curl -X POST --data-binary movies/ped-clip-3.mov http://localhost:3000/"
   },
   "author": "",
