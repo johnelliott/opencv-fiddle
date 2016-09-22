@@ -13,7 +13,7 @@
     "try": "curl -X POST --data-binary movies/ped-clip-3.mov http://localhost:3000/"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "browserify": "^13.0.0",
     "concat-stream": "^1.5.1",
